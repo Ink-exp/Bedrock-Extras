@@ -38,8 +38,7 @@ jobs:
           cp manifest.json output/
           cd output && zip -r ../BedrockExtras-v1.0.zip *
 
-      # --- SUCCESS HANDLING ---
-      - name: Upload Build Artifact (Always Available)
+      - name: Upload Build Artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
@@ -57,14 +56,3 @@ jobs:
           files: BedrockExtras-v1.0.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Notify Success
-        if: success()
-        run: echo "✅ Build completed successfully! BedrockExtras-v1.0.zip is ready."
-
-      # --- FAILURE HANDLING ---
-      - name: Handle Build Failure
-        if: failure()
-        run: |
-          echo "❌ BUILD FAILED!"
-          echo "Please check the C++ code or CMake build logs above for details."
