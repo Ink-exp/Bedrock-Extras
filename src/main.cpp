@@ -13,14 +13,11 @@
 static std::vector<std::unique_ptr<IModule>> g_modules;
 static bool g_initialized = false;
 
-// LeviLauncher Native Mod Registration Entry point
-extern "C" __attribute__((visibility("default"))) void PLGetModRegistration() {
-    LOGI("[Bedrock Extras] PLGetModRegistration called by LeviLauncher.");
-    
+// Helper function to safely load our modules
+static void init_bedrock_extras() {
     if (g_initialized) return;
 
     try {
-        // Safe module instantiation
         g_modules.push_back(std::make_unique<CullingModule>());
         g_modules.push_back(std::make_unique<BetterShulkerModule>());
 
@@ -29,16 +26,21 @@ extern "C" __attribute__((visibility("default"))) void PLGetModRegistration() {
         }
 
         g_initialized = true;
-        LOGI("[Bedrock Extras] All modules successfully initialized!");
-    } catch (const std::exception& e) {
-        LOGE("[Bedrock Extras] Failed to register modules: %s", e.what());
+        LOGI("[Bedrock Extras] Successfully initialized all modules!");
     } catch (...) {
-        LOGE("[Bedrock Extras] Unknown error occurred during mod initialization!");
+        LOGE("[Bedrock Extras] Error initializing modules.");
     }
 }
 
-// Fallback constructor (Executes when .so is dlopen'd if loader skips PLGetModRegistration)
+// 1. Variadic PLGetModRegistration: Accept ANY parameters LeviLauncher passes without memory corruption
+extern "C" __attribute__((visibility("default"))) void PLGetModRegistration(...) {
+    LOGI("[Bedrock Extras] PLGetModRegistration called safely by LeviLauncher.");
+    init_bedrock_extras();
+}
+
+// 2. Fallback constructor: Guarantees module init when dlopen() loads the .so
 __attribute__((constructor))
 void plugin_entry() {
-    LOGI("[Bedrock Extras] Native library loaded into memory.");
+    LOGI("[Bedrock Extras] Native library loaded via plugin_entry constructor.");
+    init_bedrock_extras();
 }
