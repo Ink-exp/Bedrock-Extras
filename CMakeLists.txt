@@ -12,8 +12,10 @@ add_library(
     src/main.cpp
 )
 
+# Find Android's native logging library
 find_library(log-lib log)
 
+# Link the logging library to our plugin
 target_link_libraries(
     culling_plugin
     ${log-lib}
