@@ -1,16 +1,16 @@
 {
   "format_version": 2,
   "header": {
-    "name": "Sodium Culling Plugin",
-    "description": "Massive FPS boost for Minecraft Bedrock on mobile. Culls entities outside 48 blocks.",
-    "uuid": "7f8a91b2-0c1d-4e5f-9a8b-1234567890ab",
+    "name": "Bedrock Extras",
+    "description": "Modular utility pack for Minecraft Bedrock. Features: Sodium-style Culling.",
+    "uuid": "8e9b12c3-4d5e-6f7a-8b9c-0123456789de",
     "version": [1, 0, 0],
     "min_engine_version": [1, 21, 0]
   },
   "modules": [
     {
       "type": "native_plugin",
-      "entry": "libculling_plugin.so"
+      "entry": "libbedrock_extras.so"
     }
   ]
 }
