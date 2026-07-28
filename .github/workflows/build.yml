@@ -5,6 +5,8 @@ on:
     branches: [ "main" ]
     tags:
       - 'v*'
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build-and-release:
@@ -36,9 +38,17 @@ jobs:
           cp manifest.json output/
           cd output && zip -r ../BedrockExtras-v1.0.zip *
 
+      # --- SUCCESS HANDLING ---
+      - name: Upload Build Artifact (Always Available)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: BedrockExtras-v1.0
+          path: BedrockExtras-v1.0.zip
+
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        if: success() && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main')
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
@@ -47,3 +57,14 @@ jobs:
           files: BedrockExtras-v1.0.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify Success
+        if: success()
+        run: echo "✅ Build completed successfully! BedrockExtras-v1.0.zip is ready."
+
+      # --- FAILURE HANDLING ---
+      - name: Handle Build Failure
+        if: failure()
+        run: |
+          echo "❌ BUILD FAILED!"
+          echo "Please check the C++ code or CMake build logs above for details."
