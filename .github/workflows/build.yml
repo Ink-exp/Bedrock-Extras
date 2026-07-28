@@ -1,4 +1,4 @@
-name: Build Culling Plugin
+name: Build Culling Plugin V2
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Grants permission to create releases
+      contents: write
 
     steps:
       - name: Checkout Code
@@ -34,20 +34,10 @@ jobs:
           mkdir -p output
           cp build/libculling_plugin.so output/
           cp manifest.json output/
-          cd output && zip -r ../culling-plugin.zip *
+          cd output && zip -r ../culling-plugin-v2.zip *
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CullingPlugin-Release
-          path: culling-plugin.zip
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/main'
-        with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Release v1.0.${{ github.run_number }}
-          files: culling-plugin.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: CullingPlugin-V2-Release
+          path: culling-plugin-v2.zip
