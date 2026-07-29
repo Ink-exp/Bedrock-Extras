@@ -13,9 +13,13 @@
 static std::vector<std::unique_ptr<IModule>> g_modules;
 static bool g_initialized = false;
 
-static void init_modules() {
+static void init_bedrock_extras() {
     if (g_initialized) return;
     g_initialized = true;
+
+    LOGI("=============================================");
+    LOGI("      BEDROCK EXTRAS V1.0 INITIALIZED        ");
+    LOGI("=============================================");
 
     g_modules.push_back(std::make_unique<CullingModule>());
     g_modules.push_back(std::make_unique<BetterShulkerModule>());
@@ -23,19 +27,18 @@ static void init_modules() {
     for (auto& mod : g_modules) {
         mod->on_enable();
     }
-    LOGI("[Bedrock Extras] Modules initialized successfully!");
 }
 
-// 1. Standard JNI OnLoad hook (called when Java loads the shared library)
+// JNI_OnLoad triggers safely when Java calls System.loadLibrary() / dlopen()
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
-    LOGI("[Bedrock Extras] JNI_OnLoad triggered.");
-    init_modules();
+    LOGI("[Bedrock Extras] Loaded via JNI_OnLoad.");
+    init_bedrock_extras();
     return JNI_VERSION_1_6;
 }
 
-// 2. Export PLGetModRegistration safely returning 0 / nullptr to satisfy createLoadedModEntry
-extern "C" __attribute__((visibility("default"))) void* PLGetModRegistration(void* a1, void* a2, void* a3) {
-    LOGI("[Bedrock Extras] PLGetModRegistration called safely.");
-    init_modules();
-    return nullptr;
+// C++ Constructor triggers immediately upon dlopen()
+__attribute__((constructor))
+void plugin_entry() {
+    LOGI("[Bedrock Extras] Loaded via plugin_entry constructor.");
+    init_bedrock_extras();
 }
