@@ -18,9 +18,3 @@ target_link_libraries(
     bedrock_extras
     ${log-lib}
 )
-
-# Export PLGetModRegistration so LeviLauncher can resolve it safely
-set_target_properties(bedrock_extras PROPERTIES
-    C_VISIBILITY_PRESERVED ON
-    CXX_VISIBILITY_PRESERVED ON
-)
