@@ -1,15 +1,13 @@
-name: Build and Release Bedrock Extras
+name: Build Production Native Mod
 
 on:
   push:
     branches: [ "main" ]
-    tags:
-      - 'v*'
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -38,23 +36,8 @@ jobs:
           cp manifest.json output/
           cd output && zip -r ../BedrockExtras.zip *
 
-      # Always upload artifact so you can download it from the Actions run tab directly
       - name: Upload Build Artifact
-        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: BedrockExtras-Latest
+          name: BedrockExtras-Functional
           path: BedrockExtras.zip
-
-      # Automated GitHub Release creation
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        if: success() && github.event_name == 'push'
-        with:
-          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest' }}
-          name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'Bedrock_Extras' }}
-          draft: false
-          prerelease: false
-          files: BedrockExtras.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
