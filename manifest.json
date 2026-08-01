@@ -2,7 +2,7 @@
   "format_version": 2,
   "header": {
     "name": "Bedrock Extras",
-    "description": "Modular utility pack: Sodium Culling & Better Shulker Box Preview.",
+    "description": "Modular performance and utility pack: Sodium Culling and Better Shulker Box Preview.",
     "uuid": "8e9b12c3-4d5e-6f7a-8b9c-0123456789de",
     "version": [1, 0, 0],
     "min_engine_version": [1, 21, 0]
@@ -12,9 +12,5 @@
       "type": "native_plugin",
       "entry": "libbedrock_extras.so"
     }
-  ],
-  "capabilities": [
-    "piss_native",
-    "script_eval"
   ]
 }
