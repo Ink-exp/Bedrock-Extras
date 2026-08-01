@@ -4,7 +4,6 @@ project("bedrock_extras" CXX C)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# CRITICAL FIX: include FetchContent BEFORE calling FetchContent_Declare
 include(FetchContent)
 
 FetchContent_Declare(
@@ -36,4 +35,3 @@ target_link_libraries(
     ${EGL-lib}
     dobby
 )
-
