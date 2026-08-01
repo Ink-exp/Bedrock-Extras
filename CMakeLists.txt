@@ -4,9 +4,9 @@ project("bedrock_extras" CXX C)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# CRITICAL FIX: include FetchContent BEFORE calling FetchContent_Declare
 include(FetchContent)
 
-# Automatically fetch Dobby for ARM64 inline memory hooking
 FetchContent_Declare(
     dobby
     GIT_REPOSITORY https://github.com/jmpews/Dobby.git
@@ -14,7 +14,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(dobby)
 
-include_directories(src ${dobby_SOURCE_DIR}/include)
+include_directories(
+    src 
+    ${dobby_SOURCE_DIR}/include
+)
 
 add_library(
     bedrock_extras
@@ -33,3 +36,4 @@ target_link_libraries(
     ${EGL-lib}
     dobby
 )
+
